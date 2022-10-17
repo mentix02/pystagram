@@ -69,7 +69,12 @@ class CreateUserSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         name = validated_data.pop('name')
-        first_name, last_name = name.split(' ', 1)
+
+        if len(split_name := name.split(' ')) > 1:
+            first_name, last_name = split_name
+        else:
+            first_name, last_name = name, ''
+
         return User.objects.create_user(
             **validated_data,
             last_name=last_name,
