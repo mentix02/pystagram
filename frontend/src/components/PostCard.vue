@@ -1,27 +1,74 @@
 <template>
-  <div class="card">
+  <div class="card mt-sm-3 mt-lg-0">
     <div class="card-header" style="padding-bottom: 2px">
-      <a href="#">
-        <img
-          :src="post.user.avatar"
-          class="card-user-avatar"
-          :alt="`${post.user.first_name} ${post.user.last_name}`"
-        />
-      </a>
+      <img
+        :src="post.user.avatar"
+        class="card-user-avatar"
+        :alt="`${post.user.first_name} ${post.user.last_name}`"
+      />
       <span class="mx-2">
-        <a href="#" class="text-dark">
+        <router-link
+          class="text-dark"
+          :to="{
+            name: 'profile',
+            params: { username: post.user.username },
+          }"
+        >
           {{ post.user.username }}
-        </a>
+        </router-link>
       </span>
     </div>
     <img
       :alt="post.caption"
       :src="post.images[0].file"
+      @dblclick="handleLikeClick"
       class="card-img-top img-fluid"
     />
     <div class="card-body">
+      <div>
+        <div class="float-start">
+          <div class="btn-group">
+            <button
+              class="btn"
+              :disabled="disabled"
+              @click="handleLikeClick"
+              :class="{ 'text-danger': post.is_liked }"
+            >
+              <i
+                class="bi"
+                :class="{
+                  'bi-heart': !post.is_liked,
+                  'bi-heart-fill': post.is_liked,
+                }"
+              />
+            </button>
+            <button class="btn" :disabled="disabled">
+              <i class="bi bi-chat" />
+            </button>
+            <button class="btn" :disabled="disabled">
+              <i class="bi bi-send" />
+            </button>
+          </div>
+        </div>
+        <div class="float-end">
+          <button class="btn" :disabled="disabled">
+            <i class="bi bi-bookmark" />
+          </button>
+        </div>
+      </div>
+      <br />
+      <br />
       <p class="card-text">
+        <router-link
+          class="text-dark"
+          :to="{ name: 'profile', params: { username: post.user.username } }"
+        >
+          <b>{{ post.user.username }}</b>
+        </router-link>
         {{ post.caption }}
+        <span class="text-muted float-end">
+          {{ post.comment_count }} comments
+        </span>
         <br />
         <span class="text-muted"> {{ post.timestamp }} </span>
       </p>
@@ -30,34 +77,38 @@
 </template>
 
 <script setup lang="ts">
-import { toggleLike } from "@/api/like";
 import useAlertStore from "@/stores/alert";
 import type { Post } from "@/api/types/post";
+import { createLike, removeLike } from "@/api/like";
+import { createBookmark, removeBookmark } from "@/api/bookmark";
 
 const alertStore = useAlertStore();
 
-const { post } = withDefaults(
-  defineProps<{ post: Post; disabled?: boolean }>(),
-  { disabled: false }
-);
+const props = withDefaults(defineProps<{ post: Post; disabled?: boolean }>(), {
+  disabled: false,
+});
 
 const handleLikeClickUiUpdate = () => {
-  if (post.is_liked) {
-    post.like_count -= 1;
+  if (props.post.is_liked) {
+    props.post.like_count -= 1;
   } else {
-    post.like_count += 1;
+    props.post.like_count += 1;
   }
-  post.is_liked = !post.is_liked;
+  props.post.is_liked = !props.post.is_liked;
 };
 
-const handleLikeClick = async () => {
-  handleLikeClickUiUpdate();
+const handleLikeClick = async (e: Event) => {
+  if (props.disabled) return;
   try {
-    await toggleLike(post.id);
-  } catch (err: any) {
-    alertStore.alertDangerMsg(err.message);
-    // revert UI update
+    if (props.post.is_liked) {
+      if (e.type === "dblclick") return;
+      await removeLike(props.post.id);
+    } else {
+      await createLike(props.post.id);
+    }
     handleLikeClickUiUpdate();
+  } catch (error: any) {
+    alertStore.alertDangerMsg(error.message);
   }
 };
 </script>
