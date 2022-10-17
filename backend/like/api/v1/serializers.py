@@ -1,4 +1,4 @@
-from django.shortcuts import get_object_or_404
+from django.http import Http404
 
 from rest_framework import serializers
 from rest_framework.exceptions import PermissionDenied
@@ -20,9 +20,21 @@ class LikeSerializer(serializers.ModelSerializer):
 
         liker = validated_data['user']
         post_id = validated_data['post_id']
-        post = get_object_or_404(Post, id=post_id)
+        try:
+            post = (
+                Post.objects.filter(id=post_id)
+                .select_related('user')
+                .only('user__visibility')
+                .get()
+            )
+        except Post.DoesNotExist:
+            raise Http404('Post does not exist.')
 
-        if post.user.visibility == User.PUBLIC or liker.is_following(post.user):
+        if (
+            post.user.visibility == User.PUBLIC
+            or (post.user_id == liker.id)
+            or (liker.is_following(post.user_id))
+        ):
             return Like.objects.get_or_create(**validated_data)[0]
         else:
             raise PermissionDenied(f'Follow {post.user.username} to like this post.')
