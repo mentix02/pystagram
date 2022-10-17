@@ -1,6 +1,9 @@
 <template>
   <!-- horizontal scrolling avatar list -->
-  <div class="d-flex flex-row flex-nowrap overflow-auto">
+  <div
+    v-if="!loading && users.length > 0"
+    class="d-flex flex-row flex-nowrap overflow-auto"
+  >
     <div
       :key="user.username"
       v-for="user in users"
@@ -18,16 +21,34 @@
       <span class="text-muted">{{ user.username }}</span>
     </div>
   </div>
+  <div v-else-if="loading" class="d-flex justify-content-center">
+    <div class="spinner-border" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+  <div v-else>
+    <span class="text-muted">No stories found.</span>
+  </div>
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted } from "vue";
+
+import useAlertStore from "@/stores/alert";
 import type { User } from "@/api/types/auth";
 import { getActiveStoryFollowing } from "@/api/story";
 
+const alertStore = useAlertStore();
 const users = ref<User[]>([]);
+const loading = ref<boolean>(true);
 
 onMounted(async () => {
-  users.value = await getActiveStoryFollowing();
+  try {
+    users.value = await getActiveStoryFollowing();
+  } catch (error: any) {
+    alertStore.alertDangerMsg(error.message);
+  } finally {
+    loading.value = false;
+  }
 });
 </script>
