@@ -31,9 +31,12 @@ export const signUpUser = async (
   formData.set("bio", signUpData.bio);
   formData.set("name", signUpData.name);
   formData.set("email", signUpData.email);
-  formData.set("avatar", signUpData.avatar!);
   formData.set("username", signUpData.username);
   formData.set("password", signUpData.password);
+
+  if (signUpData.avatar) {
+    formData.set("avatar", signUpData.avatar);
+  }
 
   try {
     response = await fetch(url, {
