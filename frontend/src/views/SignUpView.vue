@@ -101,7 +101,6 @@
     <div class="col-12 col-lg-4 offset-lg-4 mb-3">
       <label for="avatar" class="form-label">Avatar</label>
       <input
-        required
         id="avatar"
         type="file"
         accept="image/*"
