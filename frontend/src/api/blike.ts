@@ -8,7 +8,12 @@ export enum BlikeType {
   BOOKMARK = "bookmark",
 }
 
-export const blikeFactory = (blikeType: BlikeType) => {
+type BlikeFactoryResult = {
+  createBlike: (post_id: number) => Promise<boolean>;
+  removeBlike: (post_id: number) => Promise<boolean>;
+};
+
+export const blikeFactory = (blikeType: BlikeType): BlikeFactoryResult => {
   const createBlike = async (post_id: number): Promise<boolean> => {
     let response: Response;
     const formData = new FormData();
