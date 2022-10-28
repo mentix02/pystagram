@@ -17,6 +17,7 @@ LOCAL_APPS = [
     'like.apps.LikeConfig',
     'story.apps.StoryConfig',
     'comment.apps.CommentConfig',
+    'bookmark.apps.BookmarkConfig',
 ]
 
 THIRD_PARTY_APPS = [

@@ -7,4 +7,5 @@ urlpatterns = [
     path('feed/', include('feed.api.v1.urls')),
     path('story/', include('story.api.v1.urls')),
     path('comment/', include('comment.api.v1.urls')),
+    path('bookmark/', include('bookmark.api.v1.urls')),
 ]
