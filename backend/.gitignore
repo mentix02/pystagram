@@ -9,6 +9,9 @@ __pycache__/
 # IDE folders
 .idea/
 
+# Custom media
+media/*
+
 # Distribution / packaging
 .Python
 build/
