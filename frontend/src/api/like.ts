@@ -1,8 +1,7 @@
 import { blikeFactory, BlikeType } from "@/api/blike";
 
-const { createBlike, removeBlike } = blikeFactory(BlikeType.LIKE);
-
-const createLike = createBlike;
-const removeLike = removeBlike;
+const { createBlike: createLike, removeBlike: removeLike } = blikeFactory(
+  BlikeType.LIKE
+);
 
 export { createLike, removeLike };
