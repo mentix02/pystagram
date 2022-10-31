@@ -8,22 +8,24 @@ export enum BlikeType {
   BOOKMARK = "bookmark",
 }
 
+type BlikeFunction = (post_id: number) => Promise<boolean>;
+
 type BlikeFactoryResult = {
-  createBlike: (post_id: number) => Promise<boolean>;
-  removeBlike: (post_id: number) => Promise<boolean>;
+  createBlike: BlikeFunction;
+  removeBlike: BlikeFunction;
 };
 
 export const blikeFactory = (blikeType: BlikeType): BlikeFactoryResult => {
+  const authStore = useAuthStore();
+
   const createBlike = async (post_id: number): Promise<boolean> => {
     let response: Response;
     const formData = new FormData();
-    const authStore = useAuthStore();
 
     formData.set("post_id", post_id.toString());
 
     if (!authStore.isAuthenticated)
       throw new Error("User is not authenticated.");
-
     try {
       response = await fetch(`${BASE_URl}/${blikeType}/create/`, {
         method: "POST",
@@ -40,7 +42,6 @@ export const blikeFactory = (blikeType: BlikeType): BlikeFactoryResult => {
 
   const removeBlike = async (post_id: number): Promise<boolean> => {
     let response: Response;
-    const authStore = useAuthStore();
 
     if (!authStore.isAuthenticated)
       throw new Error("User is not authenticated.");
