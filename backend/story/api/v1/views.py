@@ -57,7 +57,10 @@ class ListActiveStoriesFeedAPIView(ListAPIView):
         )
 
 
-class ListActiveStoriesAPIView(ListAPIView):
+class ListUserActiveStoriesAPIView(ListAPIView):
+    """
+    Lists active stories for a provided user via the username.
+    """
 
     serializer_class = RetrieveStorySerializer
 

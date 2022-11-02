@@ -13,7 +13,7 @@ urlpatterns = [
     ),
     path(
         'list/<slug:username>/active/',
-        views.ListActiveStoriesAPIView.as_view(),
+        views.ListUserActiveStoriesAPIView.as_view(),
         name='list-active',
     ),
 ]
