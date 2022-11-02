@@ -20,9 +20,6 @@ export const getFeedPosts = async (): Promise<Post[]> => {
     throw new Error("Network error.");
   }
 
-  if (response.ok) {
-    return await response.json();
-  } else {
-    throw new Error("Failed to fetch posts.");
-  }
+  if (response.ok) return await response.json();
+  else throw new Error("Failed to fetch posts.");
 };
