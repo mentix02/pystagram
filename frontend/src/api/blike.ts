@@ -15,12 +15,11 @@ type BlikeFactoryResult = {
   removeBlike: BlikeFunction;
 };
 
-export const blikeFactory = (blikeType: BlikeType): BlikeFactoryResult => {
-  const authStore = useAuthStore();
-
-  const createBlike = async (post_id: number): Promise<boolean> => {
+export const blikeFactory = (blikeType: BlikeType): BlikeFactoryResult => ({
+  createBlike: async (post_id: number): Promise<boolean> => {
     let response: Response;
     const formData = new FormData();
+    const authStore = useAuthStore();
 
     formData.set("post_id", post_id.toString());
 
@@ -38,10 +37,10 @@ export const blikeFactory = (blikeType: BlikeType): BlikeFactoryResult => {
 
     if (response.ok) return true;
     else throw new Error("Something went wrong.");
-  };
-
-  const removeBlike = async (post_id: number): Promise<boolean> => {
+  },
+  removeBlike: async (post_id: number): Promise<boolean> => {
     let response: Response;
+    const authStore = useAuthStore();
 
     if (!authStore.isAuthenticated)
       throw new Error("User is not authenticated.");
@@ -57,7 +56,5 @@ export const blikeFactory = (blikeType: BlikeType): BlikeFactoryResult => {
 
     if (response.ok) return true;
     else throw new Error("Something went wrong.");
-  };
-
-  return { createBlike, removeBlike };
-};
+  },
+});
