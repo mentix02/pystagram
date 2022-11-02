@@ -24,7 +24,12 @@
     <div class="col-12 col-md-4 order-first order-md-last">
       <HomeActionsCard />
       <div class="card text-bg-light p-3">
-        <h5 class="card-title">Stories</h5>
+        <h5 class="card-title">
+          Stories
+          <router-link to="/" class="btn">
+            <i class="bi bi-plus-square-fill" />
+          </router-link>
+        </h5>
         <ActiveStoryUserList />
       </div>
     </div>
@@ -61,5 +66,3 @@ onMounted(async () => {
   setDocumentTitle("Home");
 });
 </script>
-
-<style></style>
