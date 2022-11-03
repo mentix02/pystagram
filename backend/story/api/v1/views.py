@@ -11,7 +11,7 @@ from rest_framework.generics import ListAPIView, CreateAPIView
 from user.models import User
 from story.models import Story
 from user.api.v1.serializers import ListUserSerializer
-from story.api.v1.utils import generate_deferred_fields
+from story.api.v1.utils import USER_RELATED_DEFERRED_FIELDS
 from story.api.v1.serializers import CreateStorySerializer, RetrieveStorySerializer
 
 
@@ -52,7 +52,7 @@ class ListActiveStoriesFeedAPIView(ListAPIView):
                 user_id__in=self.request.user.following.values_list('id', flat=True),
             )
             .select_related('user')
-            .defer(*generate_deferred_fields())
+            .defer(*USER_RELATED_DEFERRED_FIELDS)
             .order_by('user_id', '-timestamp')
         )
 
@@ -84,7 +84,7 @@ class ListUserActiveStoriesAPIView(ListAPIView):
                     timestamp__gte=timezone.now() - timedelta(days=1),
                 )
                 .select_related('user')
-                .defer(*generate_deferred_fields())
+                .defer(*USER_RELATED_DEFERRED_FIELDS)
                 .order_by('-timestamp')
             )
         else:

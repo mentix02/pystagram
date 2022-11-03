@@ -2,12 +2,16 @@ from django.shortcuts import get_object_or_404
 
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.exceptions import PermissionDenied
-from rest_framework.generics import ListAPIView, CreateAPIView, RetrieveDestroyAPIView
+from rest_framework.generics import (
+    ListAPIView,
+    CreateAPIView,
+    RetrieveDestroyAPIView,
+)
 
 from user.models import User
 from post.api.v1.utils import (
     generate_annotations,
-    generate_deferred_fields,
+    USER_RELATED_DEFERRED_FIELDS,
 )
 from post.api.v1.serializers import (
     CreatePostSerializer,
@@ -41,7 +45,7 @@ class ListUserPostAPIView(ListAPIView):
             or (request_user.is_authenticated and request_user == user)
             or (request_user.is_authenticated and request_user.is_following(user))
         ):
-            deferred_fields = generate_deferred_fields()
+            deferred_fields = USER_RELATED_DEFERRED_FIELDS
             annotations = generate_annotations(request_user)
             return (
                 user.posts.select_related('user')

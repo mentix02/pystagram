@@ -10,7 +10,7 @@ from rest_framework.generics import ListAPIView, CreateAPIView
 from user.models import User
 from post.models import Post
 from post.api.v1.serializers import RetrievePostSerializer
-from post.api.v1.utils import generate_annotations, generate_deferred_fields
+from post.api.v1.utils import generate_annotations, USER_RELATED_DEFERRED_FIELDS
 from feed.api.v1.serializers import (
     FollowUserSerializer,
     UnfollowUserSerializer,
@@ -28,7 +28,7 @@ class FeedAPIView(ListAPIView):
         user = self.request.user
 
         annotations = generate_annotations(user)
-        deferred_fields = generate_deferred_fields()
+        deferred_fields = USER_RELATED_DEFERRED_FIELDS
 
         following = user.following
         following_ids = list(following.values_list('id', flat=True)) + [user.id]

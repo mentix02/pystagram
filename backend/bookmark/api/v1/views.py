@@ -6,7 +6,7 @@ from rest_framework.generics import ListAPIView, CreateAPIView, DestroyAPIView
 from post.models import Post
 from pystagram.paginators import LargePagination
 from post.api.v1.serializers import RetrievePostSerializer
-from post.api.v1.utils import generate_annotations, generate_deferred_fields
+from post.api.v1.utils import generate_annotations, USER_RELATED_DEFERRED_FIELDS
 from bookmark.api.v1.serializers import BookmarkSerializer, CreateBookmarkSerializer
 
 
@@ -36,6 +36,6 @@ class ListBookmarkedPostsAPIView(ListAPIView):
             .select_related('user')
             .prefetch_related('images')
             .annotate(**generate_annotations(self.request.user))
-            .defer(*generate_deferred_fields())
+            .defer(*USER_RELATED_DEFERRED_FIELDS)
             .order_by('-timestamp')
         )
