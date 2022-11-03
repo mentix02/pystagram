@@ -15,7 +15,7 @@ var DB *sql.DB
 func init() {
 	checkErr(godotenv.Load())
 	DB = getDB(os.Getenv("DB_URL"))
-	gin.SetMode(gin.ReleaseMode)
+	// gin.SetMode(gin.ReleaseMode)
 }
 
 func main() {
