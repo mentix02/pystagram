@@ -1,5 +1,7 @@
 from django.db.models import QuerySet
+from django.shortcuts import get_object_or_404
 
+from rest_framework.exceptions import ValidationError
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.generics import ListAPIView, CreateAPIView, DestroyAPIView
 
@@ -16,13 +18,19 @@ class CreateBookmarkAPIView(CreateAPIView):
 
 
 class DeleteBookmarkAPIView(DestroyAPIView):
-    lookup_field = 'post_id'
-    lookup_url_kwarg = 'post_id'
+    lookup_field = "post_id"
+    lookup_url_kwarg = "post_id"
     serializer_class = BookmarkSerializer
     permission_classes = (IsAuthenticated,)
 
     def get_queryset(self) -> QuerySet:
         return self.request.user.bookmarks.all()
+
+    def get_object(self):
+        post_id = self.request.GET.get("post_id")
+        if post_id is None:
+            raise ValidationError("post_id is required")
+        return get_object_or_404(self.get_queryset(), post_id=post_id)
 
 
 class ListBookmarkedPostsAPIView(ListAPIView):
@@ -33,9 +41,9 @@ class ListBookmarkedPostsAPIView(ListAPIView):
     def get_queryset(self) -> QuerySet:
         return (
             Post.objects.filter(bookmark__user_id=self.request.user.id)
-            .select_related('user')
-            .prefetch_related('images')
+            .select_related("user")
+            .prefetch_related("images")
             .annotate(**generate_annotations(self.request.user))
             .defer(*USER_RELATED_DEFERRED_FIELDS)
-            .order_by('-timestamp')
+            .order_by("-timestamp")
         )
