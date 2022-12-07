@@ -46,10 +46,13 @@ export const blikeFactory = (blikeType: BlikeType): BlikeFactoryResult => ({
       throw new Error("User is not authenticated.");
 
     try {
-      response = await fetch(`${BASE_URl}/${blikeType}/delete/${post_id}/`, {
-        method: "DELETE",
-        headers: { Authorization: `Token ${authStore.token}` },
-      });
+      response = await fetch(
+        `${BASE_URl}/${blikeType}/delete/?post_id=${post_id}`,
+        {
+          method: "DELETE",
+          headers: { Authorization: `Token ${authStore.token}` },
+        }
+      );
     } catch (error) {
       throw new Error("Network error.");
     }
