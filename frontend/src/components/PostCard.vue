@@ -1,5 +1,5 @@
 <template>
-  <div class="card mt-sm-3 mt-lg-0">
+  <div class="card mt-sm-3 my-lg-3">
     <div class="card-header" style="padding-bottom: 2px">
       <img
         :src="post.user.avatar"
