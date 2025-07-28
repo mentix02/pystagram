@@ -69,7 +69,7 @@ class ListUserActiveStoriesAPIView(ListAPIView):
         username = self.kwargs['username']
         request_user: User = self.request.user
         try:
-            user = User.objects.filter(username=username).only('visibility').first()
+            user = User.objects.filter(username=username).only('visibility').get()
         except User.DoesNotExist:
             raise Http404(f'User "{username}" not found.')
 
